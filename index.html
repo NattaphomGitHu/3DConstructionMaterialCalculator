@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Project V1.18: Material Manager (Height Support)</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="taskbar">
+        <div style="font-weight:bold; margin-right:15px; color:#e67e22;">Mini Project V1.18 (H-Fix)</div>
+        <button class="task-btn active" id="tb-tools" onclick="toggleWindow('panel-tools')">Tools</button>
+        <button class="task-btn active" id="tb-outliner" onclick="toggleWindow('panel-outliner')">Outliner</button>
+        <button class="task-btn" id="tb-calc" onclick="toggleWindow('panel-calc')">Calculator</button>
+        <button class="task-btn" id="tb-mat" onclick="toggleWindow('panel-mat-manager')">🎨 Materials</button>
+        <div style="flex-grow:1;"></div>
+        <div style="font-size:11px; color:#666;">GUI: Draggable & Resizable</div>
+    </div>
+
+    <div id="panel-mat-manager" class="window-panel">
+        <div class="window-header" id="panel-mat-manager-header" style="background:#8e44ad;">
+            <span class="win-title">🎨 Material Manager</span>
+            <div class="win-controls">
+                <button class="win-btn btn-min" onclick="minimizeWindow('panel-mat-manager')">_</button>
+                <button class="win-btn btn-close" onclick="closeWindow('panel-mat-manager')">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <div style="font-size:11px; color:#aaa; margin-bottom:5px;">Select material to edit or Create New:</div>
+            <select id="mat-manager-select"></select>
+            <button id="btn-create-new-mat" style="border:1px dashed #aaa; margin-bottom:15px;">+ Create New Material</button>
+            <hr style="border-color:#555;">
+            <div id="mat-editor-area">
+                <h4>Basic Info</h4>
+                <div class="mat-row"><span class="mat-label">Name:</span> <input type="text" id="edt-mat-name"></div>
+                <div class="mat-row"><span class="mat-label">Color:</span> <input type="color" id="edt-mat-color"></div>
+                <h4>Dimensions (Unit Size)</h4>
+                <div style="font-size:10px; color:#aaa; margin-bottom:5px;">Enter in Centimeters (cm).</div>
+                <div class="mat-row"><span class="mat-label">Width (Thick):</span> <input type="number" id="edt-mat-w" step="0.1" title="Used for Layer Calculation"></div>
+                <div class="mat-row"><span class="mat-label">Height:</span> <input type="number" id="edt-mat-h" step="0.1" title="Used for Units/m2"></div>
+                <div class="mat-row"><span class="mat-label">Length:</span> <input type="number" id="edt-mat-l" step="0.1" title="Used for Units/m2"></div>
+                <div class="mat-row"><span class="mat-label">Gap/Mortar:</span> <input type="number" id="edt-mat-gap" step="0.1" value="1.5"></div>
+                <div style="background:#333; padding:5px; margin:5px 0; font-size:11px; text-align:center; color:#2ecc71;">
+                    Result: <span id="edt-calc-preview">0</span> Units / m²
+                </div>
+                <h4>Consumables (per m²)</h4>
+                <div class="mat-row"><span class="mat-label">Mortar (Bags):</span> <input type="number" id="edt-mat-mortar" step="0.01"></div>
+                <div class="mat-row"><span class="mat-label">Sand (m³):</span> <input type="number" id="edt-mat-sand" step="0.01"></div>
+                <button id="btn-save-mat" class="save-btn">💾 Save / Update Material</button>
+                <button id="btn-delete-mat" style="background:#c0392b; border-color:#e74c3c; margin-top:5px; display:none;">Delete Material</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="panel-tools" class="window-panel">
+        <div class="window-header" id="panel-tools-header">
+            <span class="win-title">🛠️ Tools</span>
+            <div class="win-controls">
+                <button class="win-btn btn-min" onclick="minimizeWindow('panel-tools')">_</button>
+                <button class="win-btn btn-close" onclick="closeWindow('panel-tools')">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <button id="btn-add-cube">+ Add Wall / Cube</button>
+            <hr style="border-color: #444;">
+            <button id="btn-draw-mode">✎ Create 2D Blueprint</button>
+            <div id="plane-selector">
+                <div style="font-size:11px; color:#aaa; margin-bottom:5px;">Select Drawing Plane:</div>
+                <button class="plane-btn" id="plane-top">Top (XZ) - Floor</button>
+                <button class="plane-btn" id="plane-front">Front (XY) - Wall</button>
+                <button class="plane-btn" id="plane-side">Side (YZ) - Side</button>
+                <button class="plane-btn" style="background:#d35400; margin-top:5px;" id="btn-finish-draw">Finish & Extrude</button>
+            </div>
+            <hr style="border-color: #444;">
+            <div id="properties-panel" style="display:none; background:#222; padding:8px; border-radius:4px; margin-bottom:10px; border:1px solid #3498db;">
+                <h4 style="margin-top:0; color:#3498db;">Selected Object Properties</h4>
+                <div style="font-size:11px; color:#aaa; margin-bottom:3px;">Wall Material:</div>
+                <select id="prop-wall-type"></select> 
+                <div style="font-size:11px; color:#aaa; margin-top:8px; margin-bottom:3px;">Position (X / Y / Z):</div>
+                <div style="display:flex; gap:5px; margin-bottom:5px;">
+                    <input type="number" id="inp-pos-x" step="0.1" style="width:33%; text-align:center;">
+                    <input type="number" id="inp-pos-y" step="0.1" style="width:33%; text-align:center;">
+                    <input type="number" id="inp-pos-z" step="0.1" style="width:33%; text-align:center;">
+                </div>
+                <div style="font-size:11px; color:#aaa; margin-top:5px; margin-bottom:3px;">Rotation (deg) (X / Y / Z):</div>
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <input type="number" id="inp-rot-x" step="15" style="width:33%; text-align:center;">
+                    <input type="number" id="inp-rot-y" step="15" style="width:33%; text-align:center;">
+                    <input type="number" id="inp-rot-z" step="15" style="width:33%; text-align:center;">
+                </div>
+                <hr style="border-color:#444; margin:8px 0;">
+                <div class="toggle-container">
+                    <span class="toggle-label" style="color:#e67e22;">🧱 Show Real Units (3D)</span>
+                    <input type="checkbox" id="chk-show-bricks">
+                </div>
+                <button id="btn-calc-single" class="calc-single-btn">🔢 Calculate This Object Only</button>
+            </div>
+            <button id="btn-translate">Move (T)</button>
+            <button id="btn-rotate">Rotate (E)</button> 
+            <button id="btn-scale">Scale (R)</button>
+            <div class="toggle-container">
+                <span class="toggle-label">Collision Mode</span>
+                <input type="checkbox" id="chk-collision">
+            </div>
+            <hr style="border-color: #444;">
+            <h4>👁️ Filter View</h4>
+            <div class="filter-grid" id="filter-container"></div>
+            <button id="btn-calc-all" class="calc-all-btn">📊 Calculate Project BOM</button>
+        </div>
+    </div>
+
+    <div id="panel-outliner" class="window-panel">
+        <div class="window-header" id="panel-outliner-header">
+            <span class="win-title">📝 Outliner</span>
+            <div class="win-controls">
+                <button class="win-btn btn-min" onclick="minimizeWindow('panel-outliner')">_</button>
+                <button class="win-btn btn-close" onclick="closeWindow('panel-outliner')">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <ul id="object-list"></ul>
+        </div>
+    </div>
+
+    <div id="panel-calc" class="window-panel">
+        <div class="window-header" id="panel-calc-header" style="background:#27ae60;">
+            <span class="win-title">📋 Bill of Materials</span>
+            <div class="win-controls">
+                <button class="win-btn btn-min" onclick="minimizeWindow('panel-calc')">_</button>
+                <button class="win-btn btn-close" onclick="closeWindow('panel-calc')">X</button>
+            </div>
+        </div>
+        <div class="window-content">
+            <div id="calc-result-content"></div>
+        </div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="module" src="bypass_script.js"></script>
+
+</body>
+</html>

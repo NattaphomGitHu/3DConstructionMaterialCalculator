@@ -1,0 +1,153 @@
+/* --- CORE STYLES --- */
+body { margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: #111; color: white; }
+#canvas-container { width: 100vw; height: 100vh; display: block; position: absolute; top: 0; left: 0; z-index: 0; }
+
+/* --- TOP TASKBAR --- */
+#taskbar {
+    position: absolute; top: 0; left: 0; width: 100%; height: 32px;
+    background: #1e1e1e; border-bottom: 1px solid #444; z-index: 100;
+    display: flex; align-items: center; padding: 0 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+.task-btn {
+    background: transparent; border: 1px solid #444; color: #ccc; 
+    padding: 4px 10px; margin-right: 5px; font-size: 12px; cursor: pointer; border-radius: 3px;
+}
+.task-btn:hover { background: #333; color: white; }
+.task-btn.active { background: #e67e22; border-color: #d35400; color: white; }
+
+/* --- DRAGGABLE WINDOWS --- */
+.window-panel {
+    position: absolute; 
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid #444; 
+    border-radius: 4px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px); 
+    z-index: 10;
+    display: flex; flex-direction: column;
+    min-width: 200px; min-height: 100px;
+    resize: both; overflow: hidden; 
+}
+
+.window-header {
+    padding: 8px 10px; background: #2c3e50; 
+    border-bottom: 1px solid #444; cursor: move;
+    display: flex; justify-content: space-between; align-items: center;
+    user-select: none;
+}
+.win-title { font-weight: bold; font-size: 13px; color: #ecf0f1; display:flex; gap:5px; align-items:center;}
+
+.win-controls { display: flex; gap: 5px; }
+.win-btn { 
+    width: 18px; height: 18px; border-radius: 3px; border: none; cursor: pointer; 
+    font-size: 10px; display: flex; align-items: center; justify-content: center; color: white;
+}
+.btn-min { background: #f39c12; }
+.btn-close { background: #c0392b; }
+
+.window-content {
+    padding: 10px; overflow-y: auto; flex-grow: 1; height: 100%;
+}
+
+/* Default Positions */
+#panel-tools { top: 50px; left: 20px; width: 260px; height: 600px; }
+#panel-outliner { top: 50px; right: 20px; width: 250px; height: 500px; }
+#panel-calc { top: 150px; left: 400px; width: 400px; height: 500px; display: none; border-color: #27ae60; }
+#panel-mat-manager { top: 60px; left: 300px; width: 320px; height: 600px; display: none; border-color: #9b59b6; }
+
+/* --- UI ELEMENTS --- */
+h3 { margin: 10px 0 5px 0; font-size: 14px; color: #e67e22; }
+h4 { margin: 5px 0; font-size: 13px; color: #aaa; }
+
+button {
+    width: 100%; margin-bottom: 6px; padding: 8px; font-size: 13px;
+    background: #444; border: 1px solid #555; color: white; cursor: pointer; border-radius: 4px;
+    transition: 0.2s;
+}
+button:hover { background: #555; }
+button.active { background: #e67e22; border-color: #d35400; }
+button.action-btn { background: #2980b9; border-color: #3498db; }
+button.save-btn { background: #27ae60; border-color: #2ecc71; font-weight: bold;}
+button.calc-all-btn { background: #27ae60; border-color: #2ecc71; margin-top: 10px; font-weight: bold; }
+button.calc-single-btn { background: #8e44ad; border-color: #9b59b6; margin-top: 5px; font-size: 12px;}
+
+/* Inputs & Selects */
+select, input[type="text"], input[type="number"] {
+    width: 100%; padding: 6px; background: #222; border: 1px solid #555; color: white; border-radius: 4px; margin-bottom: 8px; box-sizing: border-box;
+}
+input[type="color"] { width: 100%; height: 30px; padding: 0; border: none; margin-bottom: 8px;}
+
+/* Checkbox Style */
+.toggle-container {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; padding: 5px; background: #222; border-radius: 4px; border: 1px solid #444;
+}
+.toggle-label { font-size: 13px; color: #ccc; }
+
+/* Blueprint Plane Selection */
+#plane-selector {
+    display: none; margin-top: 5px; padding: 10px; background: #222; border-radius: 4px; border: 1px dashed #666;
+}
+.plane-btn { font-size: 11px; padding: 4px; margin-bottom: 2px; }
+
+/* LIST STYLES */
+#object-list { 
+    list-style: none; padding: 0; margin: 0; 
+    background: #222; border-radius: 4px;
+}
+#object-list li {
+    padding: 6px; cursor: pointer; border-bottom: 1px solid #333; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+#object-list li:hover { background: #333; }
+#object-list li.selected { background: #d35400; color: white; }
+
+/* List Icons */
+.list-icon-group { display: flex; gap: 5px; }
+.icon-btn { cursor: pointer; opacity: 0.7; padding: 2px 4px; border-radius: 3px; font-size: 14px;}
+.icon-btn:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+.icon-vis.off { opacity: 0.3; }
+.icon-calc { color: #2ecc71; } /* Green for calc */
+.icon-edit { color: #f39c12; } /* Orange for edit */
+
+/* Name Editing */
+.obj-name { flex-grow: 1; margin-right: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.obj-name-edit { width: 100%; background: #fff; color: #000; border: none; padding: 2px; font-size: 12px; }
+
+/* --- 3D LABELS --- */
+.dimension-input {
+    width: 45px !important; 
+    margin: 0 !important;
+    padding: 2px 0 !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    border: 2px solid #555 !important;
+    color: #fff !important;
+    border-radius: 4px; 
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif; 
+    font-weight: bold;
+    font-size: 11px; 
+    pointer-events: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    outline: none;
+    line-height: normal; 
+    display: inline-block;
+}
+.label-x { border-color: #ff4444 !important; color: #ffcccc !important; background: rgba(60, 0, 0, 0.8); }
+.label-y { border-color: #44ff44 !important; color: #ccffcc !important; background: rgba(0, 60, 0, 0.8); }
+.label-z { border-color: #4444ff !important; color: #ccccff !important; background: rgba(0, 0, 60, 0.8); }
+.dimension-input:focus { background: #fff !important; color: #000 !important; border-color: #e67e22 !important; }
+
+/* Filter Grid */
+.filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px; }
+.filter-btn { font-size: 11px; padding: 4px; margin: 0; }
+.filter-btn.active { border: 1px solid #fff; box-shadow: 0 0 5px #fff; }
+
+/* Mat Manager Grid */
+.mat-row { display: flex; gap: 5px; align-items: center; margin-bottom: 5px; }
+.mat-label { width: 100px; font-size: 11px; color:#ccc; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 5px; margin-bottom: 15px; }
+th, td { border: 1px solid #555; padding: 6px; text-align: left; }
+th { background: #333; color: #e67e22; }

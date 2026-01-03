@@ -56,8 +56,6 @@ Since this project uses ES6 Modules, you need a local server to run it properly 
     * **Node.js:** Use `http-server` or similar packages.
 
 ## 📸 Screenshots
-
-*(Place your screenshots here / ใส่รูปภาพตัวอย่างโปรแกรมตรงนี้)*
 ![Program Interface](path/to/screenshot.png)
 
 ---

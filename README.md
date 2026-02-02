@@ -51,7 +51,7 @@ Since this project uses ES6 Modules, you need a local server to run it properly 
     ```
 2.  **Open the project folder.**
 3.  **Run with a local server:**
-    * **VS Code:** Install the "Live Server" extension, right-click `indexV21.html`, and select "Open with Live Server".
+    * **VS Code:** Install the "Live Server" extension, right-click `index.html`, and select "Open with Live Server".
     * **Python:** Run `python -m http.server` in the terminal and open `localhost:8000`.
     * **Node.js:** Use `http-server` or similar packages.
 
